@@ -29,7 +29,7 @@ audioState.muted = localStorage.getItem(MUTE_KEY) === '1';
 
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
-let echoBus: GainNode | null = null; // посыл «плюков» в дилэй — хвост пространства
+let echoLines: GainNode[] = []; // несколько линий эха с разными характерами
 let nextFree = 0; // каскадный планировщик: ноты встают в очередь с интервалом
 let noteIdx = 0; // позиция в пентатонической лестнице доставок
 
@@ -52,24 +52,32 @@ export function initAudio(): void {
   master.connect(comp);
   comp.connect(ctx.destination);
 
-  // эхо: короткий тёмный дилэй с затуханием — «плюки» получают мягкий хвост
-  echoBus = ctx.createGain();
-  echoBus.gain.value = 1;
-  const delay = ctx.createDelay(1);
-  delay.delayTime.value = 0.31;
-  const fb = ctx.createGain();
-  fb.gain.value = 0.38;
-  const fbLp = ctx.createBiquadFilter();
-  fbLp.type = 'lowpass';
-  fbLp.frequency.value = 1600;
-  const wet = ctx.createGain();
-  wet.gain.value = 0.3;
-  echoBus.connect(delay);
-  delay.connect(fbLp);
-  fbLp.connect(fb);
-  fb.connect(delay);
-  delay.connect(wet);
-  wet.connect(master);
+  // эхо: три параллельные линии с разной длиной, обратной связью и темнотой —
+  // каждая нота случайно выбирает свою, поэтому повторов не звучит
+  const specs = [
+    { time: 0.24, fb: 0.32, wet: 0.22, cutoff: 1800 }, // короткое, ритмичное
+    { time: 0.37, fb: 0.42, wet: 0.28, cutoff: 1500 }, // среднее, просторное
+    { time: 0.52, fb: 0.26, wet: 0.2, cutoff: 1200 }, // длинное, редкий след
+  ];
+  echoLines = specs.map((s) => {
+    const input = ctx!.createGain();
+    const delay = ctx!.createDelay(1);
+    delay.delayTime.value = s.time;
+    const fb = ctx!.createGain();
+    fb.gain.value = s.fb;
+    const fbLp = ctx!.createBiquadFilter();
+    fbLp.type = 'lowpass';
+    fbLp.frequency.value = s.cutoff;
+    const wet = ctx!.createGain();
+    wet.gain.value = s.wet;
+    input.connect(delay);
+    delay.connect(fbLp);
+    fbLp.connect(fb);
+    fb.connect(delay);
+    delay.connect(wet);
+    wet.connect(master!);
+    return input;
+  });
 
   audioState.started = true;
   void ctx.resume();
@@ -133,7 +141,10 @@ function pluck(freq: number, at: number, o: PluckOpts = {}): void {
   g2.connect(lp);
   lp.connect(pn);
   pn.connect(master);
-  if (echoBus) pn.connect(echoBus); // посыл в эхо — мягкий хвост после ноты
+  if (echoLines.length) {
+    // случайная линия эха на каждую ноту — хвосты разные и живые
+    pn.connect(echoLines[Math.floor(Math.random() * echoLines.length)]);
+  }
 
   osc.start(at);
   osc2.start(at);
