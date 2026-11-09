@@ -1,0 +1,187 @@
+:root {
+  --paper: #f4f1ea;
+  --ink: #14120f;
+  --line: #d9d3c6;
+  --faint: #b9b2a2;
+  --accent: #e8641b;
+  --red: #d93a2b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#app { position: relative; width: 100vw; height: 100vh; }
+
+#cv {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+/* ---------- HUD ---------- */
+
+#hud { position: absolute; inset: 0; pointer-events: none; }
+#hud .ui { pointer-events: auto; }
+
+#topbar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 18px;
+  background: rgba(244, 241, 234, 0.92);
+  border-bottom: 2px solid var(--ink);
+}
+
+.logo {
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.stat { white-space: nowrap; font-size: 12px; letter-spacing: 0.04em; }
+
+.stat.rep { display: flex; align-items: center; gap: 6px; }
+.stat.rep .heart { color: var(--red); font-size: 14px; }
+#repbar {
+  width: 90px; height: 10px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+}
+#repbar i { display: block; height: 100%; background: var(--ink); width: 100%; transition: width 0.2s; }
+.stat.rep.low #repbar i { background: var(--red); }
+.stat.rep.low .heart { animation: pulse 0.9s infinite; }
+@keyframes pulse { 50% { opacity: 0.35; } }
+
+.speed { margin-left: auto; display: flex; gap: 6px; }
+.speed button {
+  font: inherit;
+  font-size: 12px;
+  padding: 4px 10px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  cursor: pointer;
+}
+.speed button:hover { background: var(--ink); color: var(--paper); }
+.speed button.active { background: var(--ink); color: var(--paper); }
+
+#hint {
+  position: absolute;
+  left: 18px; bottom: 14px;
+  font-size: 12px;
+  color: var(--faint);
+  max-width: 60%;
+  line-height: 1.5;
+}
+#hint.warn { color: var(--red); font-weight: 700; }
+
+/* ---------- Панель кабины ---------- */
+
+#panel {
+  position: absolute;
+  right: 16px; top: 64px;
+  width: 300px;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 6px 6px 0 rgba(20, 18, 15, 0.12);
+}
+
+#panel .p-head { font-weight: 700; letter-spacing: 0.06em; display: flex; align-items: center; gap: 8px; }
+#panel .p-head .dot { width: 12px; height: 12px; border: 2px solid var(--ink); display: inline-block; }
+#panel .p-head .dot.passenger { background: #fff; }
+#panel .p-head .dot.express { background: var(--accent); }
+#panel .p-row { font-size: 12px; line-height: 1.5; }
+#panel .mut { color: var(--faint); }
+
+#panel button, #buymenu button, #overlay button {
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  padding: 7px 10px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  cursor: pointer;
+  color: var(--ink);
+}
+#panel button:hover:not(:disabled), #buymenu button:hover:not(:disabled), #overlay button:hover {
+  background: var(--ink); color: var(--paper);
+}
+#panel button:disabled, #buymenu button:disabled { opacity: 0.4; cursor: default; }
+#panel[hidden], #buymenu[hidden] { display: none; }
+#panel button small, #buymenu button small { display: block; color: var(--faint); font-size: 11px; margin-top: 2px; }
+#panel button:hover:not(:disabled) small, #buymenu button:hover:not(:disabled) small { color: rgba(244,241,234,0.7); }
+
+/* ---------- Меню покупки ---------- */
+
+#buymenu {
+  position: absolute;
+  width: 280px;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 6px 6px 0 rgba(20, 18, 15, 0.12);
+}
+#buymenu .b-head { font-weight: 700; letter-spacing: 0.06em; }
+
+/* ---------- Оверлеи ---------- */
+
+#overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(244, 241, 234, 0.88);
+}
+#overlay[hidden] { display: none; }
+
+#overlay .card {
+  max-width: 520px;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  box-shadow: 10px 10px 0 rgba(20, 18, 15, 0.15);
+  padding: 34px 38px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+#overlay h1 { font-size: 26px; letter-spacing: 0.3em; font-weight: 700; }
+#overlay .sub { color: var(--faint); letter-spacing: 0.08em; font-size: 12px; }
+#overlay ul { list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 12.5px; line-height: 1.55; }
+#overlay ul li::before { content: "— "; color: var(--accent); }
+#overlay .keys { font-size: 11px; color: var(--faint); }
+#overlay .big { font-size: 22px; font-weight: 700; }
+#overlay button {
+  align-self: flex-start;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 10px 22px;
+  background: var(--ink);
+  color: var(--paper);
+}
+#overlay button:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+#overlay .score-row { display: flex; gap: 20px; font-size: 13px; }
+#overlay .score-row b { display: block; font-size: 19px; }

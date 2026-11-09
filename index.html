@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Elevatorer — диспетчер небоскрёба</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="cv"></canvas>
+      <div id="hud">
+        <div id="topbar" class="ui">
+          <div class="logo">ELEVATORER</div>
+          <div class="stat" id="st-money" title="Бюджет">₽ 0</div>
+          <div class="stat rep" id="st-rep" title="Репутация">
+            <span class="heart">♥</span>
+            <div id="repbar"><i></i></div>
+            <span id="repval">100</span>
+          </div>
+          <div class="stat" id="st-day" title="День и фаза">ДЕНЬ 1 · УТРО</div>
+          <div class="stat" id="st-pax" title="Перевезено пассажиров">Пассажиры: 0</div>
+          <div class="stat" id="st-floors" title="Этажи">Этажи: 6/20</div>
+          <div class="speed">
+            <button id="b-sound" title="Звук (M)">🔊</button>
+            <button id="b-pause" title="Пауза (Space)">⏸</button>
+            <button id="b-1" title="Скорость 1">1×</button>
+            <button id="b-2" title="Скорость 2">2×</button>
+          </div>
+        </div>
+        <div id="hint"></div>
+        <div id="panel" class="ui" hidden></div>
+        <div id="buymenu" class="ui" hidden></div>
+        <div id="overlay" class="ui"></div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
