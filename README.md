@@ -13,12 +13,21 @@
   <sub>слева направо: смена начинается · зонирование «1–4 + партнёр выше» · скайлайн 12·6·4</sub>
 </p>
 
+## 🎮 Играть онлайн
+
+**[https://romananchugov.github.io/elevatorer/](https://romananchugov.github.io/elevatorer/)**
+
+Игра запекается в один самодостаточный HTML-файл (~45 КБ) и публикуется командой
+`npm run bake` (сборка + копия в Pages-репо + пуш). Файл работает и локально —
+можно просто открыть его двойным кликом.
+
 ## Запуск
 
 ```bash
 npm install
 npm run dev      # http://localhost:5173
 npm run build    # прод-сборка в dist/
+npm run bake     # запечь в один HTML и опубликовать на Pages
 ```
 
 ## Как играть
